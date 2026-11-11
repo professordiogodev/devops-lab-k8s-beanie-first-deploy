@@ -1,0 +1,6 @@
+# PROVIDED. It has its own file and a name that sorts first, so that `kubectl apply -f k8s/` creates the
+# namespace before anything is put in it (files are applied in alphabetical order).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: beanie

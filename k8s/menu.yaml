@@ -1,0 +1,46 @@
+# PROVIDED as the model. Read every line: you write the other four services the same way.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu
+  namespace: beanie
+  labels: {app: menu}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: menu}
+  template:
+    metadata:
+      labels: {app: menu}
+    spec:
+      containers:
+        - name: menu
+          image: beanie:0.1.0          # the image setup.sh printed (see .image)
+          args: ["menu"]               # the ENTRYPOINT is "python -m beanie", this picks the service
+          ports:
+            - containerPort: 8001
+          livenessProbe:               # "is the process alive?"  -> restart it if not
+            httpGet: {path: /healthz, port: 8001}
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:              # "can it take traffic?"   -> remove it from the Service if not
+            httpGet: {path: /readyz, port: 8001}
+            periodSeconds: 5
+            failureThreshold: 2
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {memory: 128Mi}
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: menu
+  namespace: beanie
+spec:
+  selector: {app: menu}
+  ports:
+    - port: 8001
+      targetPort: 8001
