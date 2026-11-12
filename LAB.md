@@ -2,9 +2,18 @@
 
 ## The situation
 
-Beanie is a cafe ordering system made of five small services that call each other: a **gateway** (the only public door), a **menu**, **orders**, **payments** and **notifications**. It works on a laptop with one command. On Friday it moves to Kubernetes, and on Saturday morning the queue starts at 8:00.
+```text
+PRE-FLIGHT CHECKLIST - Beanie on Kubernetes             Friday, departure Saturday 8:00
+[ ] Five services deployed: gateway (the only public door), menu, orders,
+    payments, notifications
+[ ] A pod dies             -> orders keep coming in
+[ ] A dependency vanishes  -> orders keep coming in
+[ ] A broken release ships -> orders keep coming in
+Crew   : nobody will watch it
+Tower  : a checker that does all three things to your cluster, on purpose
+```
 
-Nobody will watch it. So before the weekend you must show that it survives the three things that actually happen to a service in production: **a pod dies**, **something it depends on disappears**, and **someone ships a broken release**. You will write the manifests, and a checker will then do those three things to your cluster, on purpose, while orders keep coming in.
+Beanie is a cafe ordering system made of five small services that call each other. It works on a laptop with one command. On Friday it moves to Kubernetes, and on Saturday morning the queue starts at 8:00. You write the manifests; the checker will then do the three things on the list to your cluster while orders keep coming in.
 
 > **Your mission**
 > - Build the Beanie image and write a Deployment and a Service for each of the five services
